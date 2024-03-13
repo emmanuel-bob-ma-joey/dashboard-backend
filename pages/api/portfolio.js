@@ -1,4 +1,4 @@
-import dbo from "../db/conn.js";
+import dbo from "../../db/conn.js";
 
 export default async function (req, res) {
   const dbConnect = dbo.getDb("finance_dashboard");
