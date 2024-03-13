@@ -1,6 +1,9 @@
 import dbo from "../../../db/conn.js";
 
 export default async function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   // Ensure the method is POST
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);

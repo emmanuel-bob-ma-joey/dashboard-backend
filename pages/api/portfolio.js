@@ -3,6 +3,10 @@ import dbo from "../../db/conn.js";
 export default async function (req, res) {
   const dbConnect = dbo.getDb("finance_dashboard");
 
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST. DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
   switch (req.method) {
     case "GET":
       // Handle GET request
