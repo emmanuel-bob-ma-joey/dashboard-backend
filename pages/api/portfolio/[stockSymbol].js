@@ -11,7 +11,9 @@ export default async function (req, res) {
   }
 
   const { stockSymbol } = req.query; // Extracting the stockSymbol from the query parameters
-  const dbConnect = dbo.getDb("finance_dashboard");
+  //const dbConnect = dbo.getDb("finance_dashboard");
+  await dbo.connectToServer();
+  const dbConnect = dbo.getDb();
 
   const myquery = { StockSymbol: stockSymbol };
   const newvalues = {
