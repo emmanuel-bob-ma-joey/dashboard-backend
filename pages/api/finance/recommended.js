@@ -7,13 +7,16 @@ export default async function (req, res) {
 
   if (req.method == "GET") {
     try {
-      const stockSymbols = req.query.stockSymbols;
-      stockSymbols == Array.isArray(stockSymbols)
-        ? stockSymbols
-        : [stockSymbols].filter(Boolean);
+      const { stockSymbols } = req.query;
+      const poop =
+        stockSymbols == Array.isArray(stockSymbols)
+          ? stockSymbols
+          : [stockSymbols].filter(Boolean);
       console.log("this is stock symbols", stockSymbols);
 
-      const result = await yahooFinance.recommendationsBySymbol(stockSymbols);
+      const result = await yahooFinance.recommendationsBySymbol(
+        stockSymbols.split(", ")
+      );
       res.json(result);
     } catch (error) {
       console.error("Error fetching recommendations:", error);
