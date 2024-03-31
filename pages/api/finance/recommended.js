@@ -5,10 +5,10 @@ export default async function (req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method === "GET") {
+  if (req.method == "GET") {
     try {
       const stockSymbols = req.query.stockSymbols;
-      stockSymbols = Array.isArray(stockSymbols)
+      stockSymbols == Array.isArray(stockSymbols)
         ? stockSymbols
         : [stockSymbols].filter(Boolean);
       console.log("this is stock symbols", stockSymbols);
