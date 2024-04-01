@@ -13,10 +13,11 @@ export default async function (req, res) {
     switch (req.method) {
       case "GET":
         // Handle GET request
+        const { user } = req.query;
 
         dbConnect
           .collection("portfolio")
-          .find({})
+          .find({ user: { user } })
           .toArray((err, result) => {
             if (err) {
               res.status(500).json({ error: err.message });
@@ -33,6 +34,7 @@ export default async function (req, res) {
           companyName: req.body.companyName,
           shares: 0,
           bookValue: 0,
+          user: req.body.uid,
         };
         dbConnect.collection("portfolio").insertOne(myobj, (err, result) => {
           if (err) {
@@ -45,7 +47,10 @@ export default async function (req, res) {
 
       case "DELETE":
         // Handle DELETE request
-        const myquery = { StockSymbol: req.body.StockSymbol };
+        const myquery = {
+          StockSymbol: req.body.StockSymbol,
+          user: req.body.uid,
+        };
         dbConnect.collection("portfolio").deleteOne(myquery, (err, result) => {
           if (err) {
             res.status(500).json({ error: err.message });
