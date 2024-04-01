@@ -13,7 +13,7 @@ export default async function (req, res) {
     switch (req.method) {
       case "GET":
         // Handle GET request
-        const { userid } = req.query.user;
+        const userid = req.query.user;
         console.log("request query is", req.query);
         console.log("userid is", userid);
         dbConnect
