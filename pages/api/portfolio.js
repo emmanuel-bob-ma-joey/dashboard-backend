@@ -13,11 +13,12 @@ export default async function (req, res) {
     switch (req.method) {
       case "GET":
         // Handle GET request
-        const { user } = req.query;
-
+        const { userid } = req.query.user;
+        console.log("request query is", req.query);
+        console.log("userid is", userid);
         dbConnect
           .collection("portfolio")
-          .find({ user: { user } })
+          .find({ user: userid })
           .toArray((err, result) => {
             if (err) {
               res.status(500).json({ error: err.message });
