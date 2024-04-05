@@ -37,6 +37,14 @@ export default async function (req, res) {
           bookValue: 0,
           user: req.body.uid,
         };
+
+        const existingRecord = await dbConnect.collection("portfolio").findOne({
+          user: req.body.uid,
+          StockSymbol: req.body.stockSymbol,
+        });
+        if (existingRecord) {
+          return res.status(409).json({ message: "Record already exists" });
+        }
         dbConnect.collection("portfolio").insertOne(myobj, (err, result) => {
           if (err) {
             res.status(500).json({ error: err.message });

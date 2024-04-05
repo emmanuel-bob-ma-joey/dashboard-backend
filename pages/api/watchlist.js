@@ -35,6 +35,15 @@ export default async function handler(req, res) {
         user: req.body.uid,
       };
       try {
+        //check if stock already exists
+        const existingRecord = await dbConnect.collection("watchlist").findOne({
+          user: req.body.uid,
+          StockSymbol: req.body.stockSymbol,
+        });
+        if (existingRecord) {
+          return res.status(409).json({ message: "Record already exists" });
+        }
+
         const result = await dbConnect.collection("watchlist").insertOne(myobj);
         res.status(201).json(result);
       } catch (error) {
