@@ -49,8 +49,10 @@ export default async function handler(req, res) {
 
     case "DELETE":
       // Handle DELETE request
+      console.log("recieved delete request");
+      console.log(req);
       const myquery = {
-        stockSymbol: req.body.stockSymbol,
+        StockSymbol: req.body.stockSymbol,
         user: req.body.user,
       }; // Assuming you're passing the document ID to delete
       try {
