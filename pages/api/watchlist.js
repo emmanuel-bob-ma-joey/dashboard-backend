@@ -19,9 +19,12 @@ export default async function handler(req, res) {
     case "GET":
       // Handle GET request
       try {
+        const userid = req.query.user;
+        console.log("request query is", req.query);
+        console.log("userid is", userid);
         const result = await dbConnect
           .collection("watchlist")
-          .find({})
+          .find({ user: userid })
           .toArray();
         res.status(200).json(result);
       } catch (error) {
@@ -34,6 +37,7 @@ export default async function handler(req, res) {
       const myobj = {
         StockSymbol: req.body.stockSymbol,
         companyName: req.body.companyName,
+        user: req.body.uid,
       };
       try {
         const result = await dbConnect.collection("watchlist").insertOne(myobj);
@@ -45,7 +49,10 @@ export default async function handler(req, res) {
 
     case "DELETE":
       // Handle DELETE request
-      const myquery = { _id: new ObjectId(req.body.id) }; // Assuming you're passing the document ID to delete
+      const myquery = {
+        stockSymbol: req.body.stockSymbol,
+        user: req.body.user,
+      }; // Assuming you're passing the document ID to delete
       try {
         const result = await dbConnect
           .collection("watchlist")
