@@ -10,11 +10,6 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle OPTIONS request
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
   switch (req.method) {
     case "GET":
       // Handle GET request
@@ -67,10 +62,12 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message });
       }
       break;
+    case "OPTIONS":
+      res.status(200).end();
 
     default:
       // Method not allowed
-      res.setHeader("Allow", ["GET", "POST", "DELETE"]);
+      res.setHeader("Allow", ["GET", "POST", "DELETE", "OPTIONS"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

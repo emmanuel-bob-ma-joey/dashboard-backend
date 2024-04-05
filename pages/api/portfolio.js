@@ -64,10 +64,12 @@ export default async function (req, res) {
           }
         });
         break;
+      case "OPTIONS":
+        res.status(200).end();
 
       default:
         // Method not allowed
-        res.setHeader("Allow", ["GET", "POST", "DELETE"]);
+        res.setHeader("Allow", ["GET", "POST", "DELETE", "OPTIONS"]);
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   } catch (err) {
