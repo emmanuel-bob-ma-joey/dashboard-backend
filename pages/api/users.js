@@ -5,7 +5,7 @@ export default async function (req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method !== "POST") {
+  if (req.method !== "POST" || req.method !== "OPTIONS") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
