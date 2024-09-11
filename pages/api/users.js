@@ -4,7 +4,6 @@ export default async function (req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*"); // Adjust as needed
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  const dbConnect = dbo.getDb("finance_dashboard");
 
   switch (req.method) {
     case "OPTIONS":
@@ -14,6 +13,7 @@ export default async function (req, res) {
       const { uid } = req.body;
 
       try {
+        const dbConnect = dbo.getDb("finance_dashboard");
         const result = await dbConnect.collection("users").insertOne({ uid });
         res.status(201).json({ message: "User created successfully", result });
       } catch (error) {
@@ -28,6 +28,7 @@ export default async function (req, res) {
 
       try {
         // Delete user from users collection
+        const dbConnect = dbo.getDb("finance_dashboard");
         await dbConnect.collection("users").deleteOne({ uid: userIdToDelete });
 
         // Delete user's portfolio
