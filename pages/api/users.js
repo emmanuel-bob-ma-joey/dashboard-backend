@@ -11,12 +11,10 @@ export default async function (req, res) {
       res.status(200).end();
       break;
     case "POST":
-      const { uid, email } = req.body;
+      const { uid } = req.body;
 
       try {
-        const result = await dbConnect
-          .collection("users")
-          .insertOne({ uid, email });
+        const result = await dbConnect.collection("users").insertOne({ uid });
         res.status(201).json({ message: "User created successfully", result });
       } catch (error) {
         console.error("Error creating user:", error);
