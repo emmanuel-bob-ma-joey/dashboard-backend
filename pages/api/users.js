@@ -40,14 +40,14 @@ export default async function handler(req, res) {
       break;
 
     case "POST":
-      const { uid, email } = req.body;
+      const { user } = req.body;
 
-      if (!uid || !email) {
-        return res.status(400).json({ message: "Missing uid or email" });
+      if (!user) {
+        return res.status(400).json({ message: "Missing user" });
       }
 
       try {
-        const result = await db.collection("users").insertOne({ uid, email });
+        const result = await db.collection("users").insertOne({ user });
         res.status(201).json({ message: "User created successfully", result });
       } catch (error) {
         console.error("Error creating user:", error);
@@ -58,12 +58,12 @@ export default async function handler(req, res) {
       break;
 
     case "DELETE":
-      const { uid: userIdToDelete } = req.query;
+      const { user: userIdToDelete } = req.query;
 
       if (!userIdToDelete) {
         return res
           .status(400)
-          .json({ message: "Missing uid in query parameters" });
+          .json({ message: "Missing user id in query parameters" });
       }
 
       try {
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
         const deleteUserResult = await db
           .collection("users")
-          .deleteOne({ uid: userIdToDelete });
+          .deleteOne({ user: userIdToDelete });
         console.log("Delete user result:", deleteUserResult);
 
         const deletePortfolioResult = await db
@@ -92,12 +92,10 @@ export default async function handler(req, res) {
         });
       } catch (error) {
         console.error("Error deleting user data:", error);
-        res
-          .status(500)
-          .json({
-            error: "Failed to delete user data",
-            details: error.toString(),
-          });
+        res.status(500).json({
+          error: "Failed to delete user data",
+          details: error.toString(),
+        });
       }
       break;
 
