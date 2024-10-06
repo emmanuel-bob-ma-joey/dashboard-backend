@@ -33,9 +33,13 @@ export default async function (req, res) {
         const myobj = {
           StockSymbol: req.body.stockSymbol,
           companyName: req.body.companyName,
-          shares: 0,
-          bookValue: 0,
+          shares: req.body.shares,
+          bookValue: req.body.bookValue,
           user: req.body.uid,
+          buyPrice: req.body.buyPrice,
+          sellPrice: req.body.sellPrice,
+          buyDays: req.body.buyDays,
+          sellDays: req.body.sellDays,
         };
 
         const existingRecord = await dbConnect.collection("portfolio").findOne({

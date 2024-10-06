@@ -34,76 +34,96 @@ export default async function handler(req, res) {
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
-  }
+  } else if (req.method === "POST") {
+    const { uid } = req.query;
+    const {
+      StockSymbol,
+      shares,
+      bookValue,
+      buyPrice,
+      sellPrice,
+      buyDays,
+      sellDays,
+    } = req.body;
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
+    if (
+      !uid ||
+      !StockSymbol ||
+      shares == null ||
+      bookValue == null ||
+      buyPrice == null ||
+      sellPrice == null ||
+      buyDays == null ||
+      sellDays == null
+    ) {
+      return res.status(400).json({ message: "Missing required parameters" });
+    }
 
-  const { uid } = req.query;
-  const { StockSymbol, shares, bookValue } = req.body;
+    try {
+      const { db } = await connectToDatabase();
 
-  if (!uid || !StockSymbol || shares == null || bookValue == null) {
-    return res.status(400).json({ message: "Missing required parameters" });
-  }
+      // First, find the existing record
+      const existingRecord = await db
+        .collection("portfolio")
+        .findOne({ user: uid, StockSymbol: StockSymbol });
 
-  try {
-    const { db } = await connectToDatabase();
-
-    // First, find the existing record
-    const existingRecord = await db
-      .collection("portfolio")
-      .findOne({ user: uid, StockSymbol: StockSymbol });
-
-    let newBookValue;
-    if (existingRecord) {
-      if (shares > existingRecord.shares) {
-        // Buying more shares
-        const additionalShares = shares - existingRecord.shares;
-        newBookValue = existingRecord.bookValue + additionalShares * bookValue;
-      } else if (shares < existingRecord.shares) {
-        // Selling shares
-        const soldShares = existingRecord.shares - shares;
-        const averageCost = existingRecord.bookValue / existingRecord.shares;
-        newBookValue = existingRecord.bookValue - soldShares * averageCost;
+      let newBookValue;
+      if (existingRecord) {
+        if (shares > existingRecord.shares) {
+          // Buying more shares
+          const additionalShares = shares - existingRecord.shares;
+          newBookValue =
+            existingRecord.bookValue + additionalShares * bookValue;
+        } else if (shares < existingRecord.shares) {
+          // Selling shares
+          const soldShares = existingRecord.shares - shares;
+          const averageCost = existingRecord.bookValue / existingRecord.shares;
+          newBookValue = existingRecord.bookValue - soldShares * averageCost;
+        } else {
+          // Same number of shares, update bookValue
+          newBookValue = bookValue * shares;
+        }
       } else {
-        // Same number of shares, update bookValue
+        // New record
         newBookValue = bookValue * shares;
       }
-    } else {
-      // New record
-      newBookValue = bookValue * shares;
-    }
 
-    const result = await db.collection("portfolio").updateOne(
-      { user: uid, StockSymbol: StockSymbol },
-      {
-        $set: {
-          shares: shares,
-          bookValue: newBookValue,
-          lastUpdated: new Date(),
+      const result = await db.collection("portfolio").updateOne(
+        { user: uid, StockSymbol: StockSymbol },
+        {
+          $set: {
+            shares: shares,
+            bookValue: newBookValue,
+            lastUpdated: new Date(),
+            buyPrice: buyPrice,
+            sellPrice: sellPrice,
+            buyDays: buyDays,
+            sellDays: sellDays,
+          },
         },
-      },
-      { upsert: true }
-    );
+        { upsert: true }
+      );
 
-    if (result.matchedCount > 0) {
-      res.status(200).json({
-        message: "Portfolio record updated successfully",
-        result,
-        newBookValue,
-      });
-    } else {
-      res.status(201).json({
-        message: "New portfolio record created",
-        result,
-        newBookValue,
-      });
+      if (result.matchedCount > 0) {
+        res.status(200).json({
+          message: "Portfolio record updated successfully",
+          result,
+          newBookValue,
+        });
+      } else {
+        res.status(201).json({
+          message: "New portfolio record created",
+          result,
+          newBookValue,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating portfolio:", error);
+      res
+        .status(500)
+        .json({ message: "Error updating portfolio", error: error.toString() });
     }
-  } catch (error) {
-    console.error("Error updating portfolio:", error);
-    res
-      .status(500)
-      .json({ message: "Error updating portfolio", error: error.toString() });
+  } else {
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
 }
