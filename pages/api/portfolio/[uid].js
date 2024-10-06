@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     // First, find the existing record
     const existingRecord = await db
       .collection("portfolio")
-      .findOne({ userId: uid, StockSymbol: StockSymbol });
+      .findOne({ user: uid, StockSymbol: StockSymbol });
 
     let newBookValue;
     if (existingRecord) {
@@ -76,7 +76,7 @@ export default async function handler(req, res) {
     }
 
     const result = await db.collection("portfolio").updateOne(
-      { userId: uid, StockSymbol: StockSymbol },
+      { user: uid, StockSymbol: StockSymbol },
       {
         $set: {
           shares: shares,
