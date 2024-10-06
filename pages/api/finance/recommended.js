@@ -8,10 +8,10 @@ export default async function (req, res) {
   if (req.method == "GET") {
     try {
       const { stockSymbols } = req.query;
-      const poop =
-        stockSymbols == Array.isArray(stockSymbols)
-          ? stockSymbols
-          : [stockSymbols].filter(Boolean);
+      // const poop =
+      //   stockSymbols == Array.isArray(stockSymbols)
+      //     ? stockSymbols
+      //     : [stockSymbols].filter(Boolean);
       console.log("this is stock symbols", stockSymbols);
 
       const result = await yahooFinance.recommendationsBySymbol(

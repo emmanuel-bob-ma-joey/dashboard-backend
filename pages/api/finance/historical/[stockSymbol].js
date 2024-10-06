@@ -9,11 +9,9 @@ export default async function (req, res) {
     const { stockSymbol } = req.query;
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
     const queryOptions = {
       period1: oneYearAgo.toISOString().split("T")[0], // Format: YYYY-MM-DD
     };
-
     console.log("requesting historical data for", stockSymbol);
 
     try {
